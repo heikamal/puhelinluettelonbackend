@@ -3,6 +3,7 @@ const app = express()
 
 app.use(express.json())
 
+// puhelinluettelon alustus
 let persons = [
     {
         id: 1,
@@ -26,8 +27,27 @@ let persons = [
     }
 ]
 
+// koko puhelinluettelon näyttäminen json-muodossa
 app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+
+// info-ruudun esittäminen
+app.get('/info', (req, res) => {
+    const date = new Date()
+    res.send(`Phonebook has info for ${persons.length} people <br> ${date}`)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const person = persons.find(person => person.id === id)
+
+    if (person) {
+        res.json(person)
+    } else {
+        res.status(404).end()
+    }
+    
 })
 
 const PORT = 3001
