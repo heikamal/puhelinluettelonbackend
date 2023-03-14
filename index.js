@@ -66,12 +66,19 @@ const generateId = () => {
 // henkilön lisääminen
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    console.log(body)
 
+    // jos nimi tai numero puuttuu
     if (!body.name || !body.number) {
         return res.status(400).json({ 
           error: 'content missing' 
         })
+    }
+
+    // jos numero löytyy jo
+    if (persons.some(person => person.name === body.name)){
+        return res.status(400).json({ 
+            error: 'name must be unique' 
+          })
     }
 
     const person = {
