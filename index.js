@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const Person = require('./models/person')
 
 app.use(express.json())
 app.use(express.static('build'))
@@ -46,7 +48,9 @@ let persons = [
 
 // koko puhelinluettelon näyttäminen json-muodossa
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(people => {
+        res.json(people)
+    })
 })
 
 // info-ruudun esittäminen
@@ -98,14 +102,14 @@ app.post('/api/persons', (req, res) => {
           })
     }
 
-    const person = {
-        id: generateId(),
+    const person = new Person({
         name: body.name,
-        number: body.number
-    }
+        number: body.number,
+    })
 
-    persons = persons.concat(person)
-    res.json(person)
+    person.save().then(savedPerson => {
+        res.json(savedPerson)
+    })
 })
 
 const PORT = process.env.PORT || 3001
