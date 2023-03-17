@@ -57,7 +57,9 @@ app.get('/api/persons', (req, res) => {
 // info-ruudun esittäminen
 app.get('/info', (req, res) => {
     const date = new Date()
-    res.send(`Phonebook has info for ${persons.length} people <br> ${date}`)
+    Person.count({}).then(count => {
+        res.send(`Phonebook has info for ${count} people <br> ${date}`)
+    })
 })
 
 // yksittäisen henkilön esittäminen
