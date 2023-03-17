@@ -3,6 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const Person = require('./models/person')
+const mongoose = require ('mongoose')
 
 app.use(express.json())
 app.use(express.static('build'))
@@ -91,6 +92,21 @@ app.post('/api/persons', (req, res) => {
     person.save().then(savedPerson => {
         res.json(savedPerson)
     })
+})
+
+// henkilön numeron muokkaaminen
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+    
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+    
+    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(result => {
+        res.json(person)
+    }).catch(error => next(error))
 })
 
 // virheidenkäsittelijät
